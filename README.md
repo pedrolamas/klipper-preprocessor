@@ -21,7 +21,7 @@ Currently it allows the following improvements:
 1. Open Cura
 2. Open the "Help" menu and click "Show Configuration Folder"
 3. On the file list, open the "scripts" folder
-4. Download [KlipperPreprocessor.py](raw/master/KlipperPreprocessor.py) to the "scripts" folder
+4. Download [KlipperPreprocessor.py](KlipperPreprocessor.py) to the "scripts" folder
 5. Close the file list
 6. Close Cura
 7. (optional) Download [preprocess_cancellation](https://github.com/kageurufu/preprocess_cancellation/releases/latest) to a folder of your choice
