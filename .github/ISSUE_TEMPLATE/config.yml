@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Klipper
+    url: https://github.com/KevinOConnor/klipper
+    about: The Klipper GitHub repository
+  - name: Moonraker
+    url: https://github.com/Arksine/moonraker
+    about: The Moonraker GitHub repository
+  - name: Klipper Discord Server
+    url: https://discord.klipper3d.org/
+    about: Klipper related questions and general support
+  - name: Twitter contact
+    url: https://twitter.com/pedrolamas
+    about: Quickest way to get in contact
