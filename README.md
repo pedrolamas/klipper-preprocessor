@@ -11,6 +11,7 @@
 Currently it allows the following improvements:
 
 - Add `SET_PRINT_STATS_INFO` so that Klipper can know what is the exact total layer count, and the current layer number in real-time.
+- Add `TIMELAPSE_TAKE_FRAME` so that Klipper together with [moonraker-timelapse](https://github.com/mainsail-crew/moonraker-timelapse) can take snapshots on each layer change to make timelapse videos.
 - Run [preprocess_cancellation](https://github.com/kageurufu/preprocess_cancellation) tool to add object cancellation data to the resulting G-Code, enabling Klipper to cancel any specific single object while printing.
 - Run [klipper_estimator](https://github.com/Annex-Engineering/klipper_estimator) to add a more accurate time estimation to the resulting G-Code.
 

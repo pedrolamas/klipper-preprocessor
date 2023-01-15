@@ -28,6 +28,13 @@ class KlipperPreprocessor(Script):
                     "type": "bool",
                     "default_value": true
                 },
+                "add_timelapse_take_frame":
+                {
+                    "label": "Add TIMELAPSE_TAKE_FRAME",
+                    "description": "Enable this to allow the slicer to add moonraker-timelapse's TIMELAPSE_TAKE_FRAME macro to the resulting G-Code. This allows Klipper to take snapshots on each layer change to make timelapse videos.",
+                    "type": "bool",
+                    "default_value": true
+                },
                 "preprocess_cancellation_enabled": {
                     "label": "Use preprocess_cancellation",
                     "description": "Enable this to will allow the slicer to add object cancellation data to the resulting G-Code, enabling Klipper to cancel any specific single object while printing.",
@@ -89,6 +96,7 @@ class KlipperPreprocessor(Script):
 
     def execute(self, data):
         add_set_print_stats_info = self.getSettingValueByKey("add_set_print_stats_info")
+        add_timelapse_take_frame = self.getSettingValueByKey("add_timelapse_take_frame")
 
         with TemporaryDirectory() as work_dir:
             filename = os.path.join(work_dir, "work.gcode")
@@ -97,10 +105,13 @@ class KlipperPreprocessor(Script):
                     lines = layer.split("\n")
                     for line in lines:
                         work_file.write(line + "\n")
-                        if add_set_print_stats_info:
-                            if (line.startswith(';LAYER:')):
+                        if (line.startswith(';LAYER:')):
+                            if add_timelapse_take_frame:
+                                work_file.write("TIMELAPSE_TAKE_FRAME\n")
+                            if add_set_print_stats_info:
                                 work_file.write("SET_PRINT_STATS_INFO CURRENT_LAYER=%i\n" % (int(line[7:]) + 1,))
-                            elif (line.startswith(';LAYER_COUNT:')):
+                        elif (line.startswith(';LAYER_COUNT:')):
+                            if add_set_print_stats_info:
                                 work_file.write("SET_PRINT_STATS_INFO TOTAL_LAYERS=%s\n" % (line[13:],))
 
             if self.getSettingValueByKey("preprocess_cancellation_enabled"):
