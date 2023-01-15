@@ -37,8 +37,9 @@ Currently it allows the following improvements:
 
 - [Klipper](https://github.com/Klipper3d/klipper) by [Kevin O'Connor](https://github.com/KevinOConnor)
 - [Moonraker](https://github.com/Arksine/moonraker) by [Eric Callahan](https://github.com/Arksine)
-- [klipper_estimator](https://github.com/Annex-Engineering/klipper_estimator) by [Dalegaard](https://github.com/dalegaard)
+- [klipper_estimator](https://github.com/Annex-Engineering/klipper_estimator) by [Lasse Dalegaard](https://github.com/dalegaard)
 - [preprocess_cancellation](https://github.com/kageurufu/preprocess_cancellation) by [Frank Tackitt](https://github.com/kageurufu)
+- [moonraker-timelapse](https://github.com/mainsail-crew/moonraker-timelapse) by [Mainsail Crew](https://github.com/mainsail-crew)
 
 ## License
 
