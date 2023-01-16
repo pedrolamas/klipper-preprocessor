@@ -75,14 +75,6 @@ class KlipperPreprocessor(Script):
                     "default_value": "file",
                     "enabled": "klipper_estimator_enabled"
                 },
-                "klipper_estimator_config_file_path":
-                {
-                    "label": "Path to config file",
-                    "description": "The full path for the klipper_estimator config file.",
-                    "type": "str",
-                    "default_value": "",
-                    "enabled": "klipper_estimator_enabled and klipper_estimator_config_type != 'moonraker_url'"
-                },
                 "klipper_estimator_moonraker_url":
                 {
                     "label": "Moonraker URL",
@@ -90,6 +82,21 @@ class KlipperPreprocessor(Script):
                     "type": "str",
                     "default_value": "",
                     "enabled": "klipper_estimator_enabled and klipper_estimator_config_type == 'moonraker_url'"
+                },
+                "klipper_estimator_config_cache": {
+                    "label": "Cache config from Moonraker",
+                    "description": "Enable this to cache a copy of the config from Moonraker.",
+                    "type": "bool",
+                    "default_value": false,
+                    "enabled": "klipper_estimator_enabled and klipper_estimator_config_type == 'moonraker_url'"
+                },
+                "klipper_estimator_config_file_path":
+                {
+                    "label": "Path to config file",
+                    "description": "The full path for the klipper_estimator config file.",
+                    "type": "str",
+                    "default_value": "",
+                    "enabled": "klipper_estimator_enabled and (klipper_estimator_config_type != 'moonraker_url' or klipper_estimator_config_cache)"
                 }
             }
         }"""
@@ -126,7 +133,27 @@ class KlipperPreprocessor(Script):
 
             if self.getSettingValueByKey("klipper_estimator_enabled"):
                 klipper_estimator_config_type = self.getSettingValueByKey("klipper_estimator_config_type")
-                klipper_estimator_config_arg = self.getSettingValueByKey("klipper_estimator_moonraker_url") if klipper_estimator_config_type == 'moonraker_url' else self.getSettingValueByKey("klipper_estimator_config_file_path")
+                klipper_estimator_moonraker_url = self.getSettingValueByKey("klipper_estimator_moonraker_url")
+                klipper_estimator_config_file_path = self.getSettingValueByKey("klipper_estimator_config_file_path")
+
+                if klipper_estimator_config_type == 'moonraker_url' and self.getSettingValueByKey("klipper_estimator_config_cache"):
+                    klipper_estimator_config_type = 'file'
+
+                    args = [
+                        self.getSettingValueByKey("klipper_estimator_path"),
+                        "--config_moonraker_url",
+                        klipper_estimator_moonraker_url,
+                        "dump-config"
+                    ]
+
+                    config_filename = os.path.join(work_dir, "config.json")
+                    with open(config_filename, 'w') as config_file:
+                        ret = subprocess.run(args, stdout=config_file, stderr=subprocess.STDOUT)
+                        if ret.returncode == 0:
+                            shutil.copy(config_filename, klipper_estimator_config_file_path)
+
+                klipper_estimator_config_arg = klipper_estimator_moonraker_url if klipper_estimator_config_type == 'moonraker_url' else klipper_estimator_config_file_path
+
                 args = [
                     self.getSettingValueByKey("klipper_estimator_path"),
                     "--config_" + klipper_estimator_config_type,
