@@ -6,7 +6,9 @@
 # MIT licensed
 
 from ..Script import Script
+from UM.Message import Message
 from tempfile import TemporaryDirectory
+import sys
 import subprocess
 import shutil
 import os
@@ -124,50 +126,77 @@ class KlipperPreprocessor(Script):
                             if add_set_print_stats_info:
                                 work_file.write("SET_PRINT_STATS_INFO TOTAL_LAYERS=%s\n" % (line[13:],))
 
-            if self.getSettingValueByKey("preprocess_cancellation_enabled"):
-                args = [
-                    self.getSettingValueByKey("preprocess_cancellation_path"),
-                    filename,
-                ]
+            self.execute_preprocess_cancellation(filename)
 
-                ret = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if ret.returncode != 0:
-                    raise RuntimeError("Failed to run preprocess_cancellation\n%s" % (ret.stdout,))
-
-            if self.getSettingValueByKey("klipper_estimator_enabled"):
-                klipper_estimator_config_type = self.getSettingValueByKey("klipper_estimator_config_type")
-                klipper_estimator_moonraker_url = self.getSettingValueByKey("klipper_estimator_moonraker_url")
-                klipper_estimator_config_file_path = self.getSettingValueByKey("klipper_estimator_config_file_path")
-
-                if klipper_estimator_config_type == 'moonraker_url' and self.getSettingValueByKey("klipper_estimator_config_cache"):
-                    klipper_estimator_config_type = 'file'
-
-                    args = [
-                        self.getSettingValueByKey("klipper_estimator_path"),
-                        "--config_moonraker_url",
-                        klipper_estimator_moonraker_url,
-                        "dump-config"
-                    ]
-
-                    config_filename = os.path.join(work_dir, "config.json")
-                    with open(config_filename, 'w') as config_file:
-                        ret = subprocess.run(args, stdout=config_file, stderr=subprocess.STDOUT)
-                        if ret.returncode == 0:
-                            shutil.copy(config_filename, klipper_estimator_config_file_path)
-
-                klipper_estimator_config_arg = klipper_estimator_moonraker_url if klipper_estimator_config_type == 'moonraker_url' else klipper_estimator_config_file_path
-
-                args = [
-                    self.getSettingValueByKey("klipper_estimator_path"),
-                    "--config_" + klipper_estimator_config_type,
-                    klipper_estimator_config_arg,
-                    "post-process",
-                    filename,
-                ]
-
-                ret = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                if ret.returncode != 0:
-                    raise RuntimeError("Failed to run klipper_estimator\n%s" % (ret.stdout,))
+            self.execute_klipper_estimator(filename, work_dir)
 
             with open(filename) as work_file:
                 return work_file.readlines()
+
+    def execute_preprocess_cancellation(self, filename):
+        if self.getSettingValueByKey("preprocess_cancellation_enabled"):
+            args = [
+                self.getSettingValueByKey("preprocess_cancellation_path"),
+                filename,
+            ]
+
+            try:
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 10)
+                if ret.returncode != 0:
+                    self.showWarningMessage("Failed to run preprocess_cancellation\n%s" % (ret.stdout,))
+            except subprocess.TimeoutExpired:
+                self.showWarningMessage("Timeout while running preprocess_cancellation")
+
+    def execute_klipper_estimator(self, filename, work_dir):
+        if self.getSettingValueByKey("klipper_estimator_enabled"):
+            klipper_estimator_config_type = self.getSettingValueByKey("klipper_estimator_config_type")
+            klipper_estimator_moonraker_url = self.getSettingValueByKey("klipper_estimator_moonraker_url")
+            klipper_estimator_config_file_path = self.getSettingValueByKey("klipper_estimator_config_file_path")
+
+            if klipper_estimator_config_type == 'moonraker_url' and self.getSettingValueByKey("klipper_estimator_config_cache"):
+                klipper_estimator_config_type = 'file'
+
+                args = [
+                    self.getSettingValueByKey("klipper_estimator_path"),
+                    "--config_moonraker_url",
+                    klipper_estimator_moonraker_url,
+                    "dump-config"
+                ]
+
+                config_filename = os.path.join(work_dir, "config.json")
+                with open(config_filename, 'w') as config_file:
+                    try:
+                        ret = subprocess.run(args, stdout = config_file, startupinfo = self.getSubprocessStartupinfo(), timeout = 3)
+                        if ret.returncode == 0:
+                            shutil.copy(config_filename, klipper_estimator_config_file_path)
+                    except subprocess.TimeoutExpired:
+                        pass
+
+            klipper_estimator_config_arg = klipper_estimator_moonraker_url if klipper_estimator_config_type == 'moonraker_url' else klipper_estimator_config_file_path
+
+            args = [
+                self.getSettingValueByKey("klipper_estimator_path"),
+                "--config_" + klipper_estimator_config_type,
+                klipper_estimator_config_arg,
+                "post-process",
+                filename,
+            ]
+
+            try:
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 10)
+                if ret.returncode != 0:
+                    self.showWarningMessage("Failed to run klipper_estimator\n%s" % (ret.stdout,))
+            except subprocess.TimeoutExpired:
+                self.showWarningMessage("Timeout while running klipper_estimator")
+
+    def getSubprocessStartupinfo(self):
+        if sys.platform == "win32":
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+            return startupinfo
+        return None
+
+    def showWarningMessage(self, text):
+        message = Message(text, title = "Klipper Preprocessor", message_type = Message.MessageType.WARNING)
+        message.show()
