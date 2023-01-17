@@ -1,5 +1,5 @@
 # Klipper Preprocessor script for Cura
-# Version: 1.0.0
+# Version: 1.1.0
 #
 # Copyright (c) 2022 Lasse Dalegaard
 # Copyright (c) 2023 Pedro Lamas
