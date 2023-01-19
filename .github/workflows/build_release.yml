@@ -1,0 +1,20 @@
+name: Build and release
+
+on:
+  create:
+    tags:
+      - v*
+  workflow_dispatch:
+
+jobs:
+  build_release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: KlipperPreprocessor.py
