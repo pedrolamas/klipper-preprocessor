@@ -124,7 +124,7 @@ class KlipperPreprocessor(Script):
                                 work_file.write("SET_PRINT_STATS_INFO CURRENT_LAYER=%i\n" % (int(line[7:]) + 1,))
                         elif (line.startswith(';LAYER_COUNT:')):
                             if add_set_print_stats_info:
-                                work_file.write("SET_PRINT_STATS_INFO TOTAL_LAYERS=%s\n" % (line[13:],))
+                                work_file.write("SET_PRINT_STATS_INFO TOTAL_LAYER=%s\n" % (line[13:],))
 
             self.execute_preprocess_cancellation(filename)
 
