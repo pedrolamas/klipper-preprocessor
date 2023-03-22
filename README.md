@@ -33,6 +33,61 @@ Currently it allows the following improvements:
 12. Set options acording to your needs (hover any option to view the description)
 13. Click "Close" when ready
 
+## Recommended Cura settings for Klipper
+
+Klipper documentation includes some generic [slicer recommended settings](https://www.klipper3d.org/Slicers.html#slicers) that must be followed.
+
+Below are some other settings that will improve your Cura slicing results while using Klipper.
+
+### Disable Jerk
+
+Klipper does not support Jerk and instead relies on [square_corner_velocity](https://www.klipper3d.org/Config_Reference.html#printer).
+
+Is is recommended to untick the "Enable Jerk Control" option in the "Speed" section in Cura.
+
+### Adding extra metadata for Moonraker
+
+Moonraker actively reads metadata from all sliced files, but there is some missing data in Cura sliced files.
+
+To make sure you get all possible metadata on these files, add this to the top of your "Start G-code" in Cura, before any other instructions:
+
+```text
+;Nozzle diameter = {machine_nozzle_size}
+;Filament type = {material_type}
+;Filament name = {material_name}
+;Filament weight = {filament_weight}
+; M190 S{material_bed_temperature_layer_0}
+; M109 S{material_print_temperature_layer_0}
+```
+
+These lines are marked as comments, so they have no impact on the g-code, but Moonraker will still be able to find and use those values.
+
+### Improving Cura print time estimations
+
+The default printer (machine) profiles in Cura have fixed values for max-acceleration and max-speed, so when we set values above those defaults while slicing a file, Cura will ignore when estimating the printing time and use the default ones instead, so the estimation will be off.
+
+To fix this, follow these steps:
+
+1. Open Cura
+2. Click on the "Marketplace" button on the top right of the window
+3. On the Plugins list, select the "Printer Settings"
+4. Click "Install"
+5. Restart Cura
+6. On the "Print settings" flyout, there should now be a new section called "Printer Settings" (you might need to ensure they are visible by clicking the "hamburger" menu on the top right and selecting "All")
+7. Expand that section and change the "Maximum Speed..." and "Maximum Acceleration..." fields to match the values you are using in your Klipper configuration
+
+## FAQ
+
+### Why am I seeing "Unknown Command M205" while printing?
+
+That will be because you have jerk enabled in Cura. You can safely [disable jerk](#disable-jerk) to fix it.
+
+### What is the "NOMESH" object?
+
+Cura 5.3 was released with a [bug](https://github.com/Ultimaker/Cura/issues/14679) that causes the identification of a "NOMESH" object.
+
+To mitigate this issue, add a "Search and Replace" post-processing script before any other script, then set the "Search" field to `;MESH:NOMESH`, the "Replace" field to `;MESH:NONMESH` and untick the "Use Regular Expressions" field.
+
 ## Credits and Acknowledgements
 
 - [Klipper](https://github.com/Klipper3d/klipper) by [Kevin O'Connor](https://github.com/KevinOConnor)
