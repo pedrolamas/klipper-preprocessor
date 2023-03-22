@@ -6,7 +6,7 @@
 [![Follow pedrolamas on Twitter](https://img.shields.io/twitter/follow/pedrolamas?label=Follow%20@pedrolamas%20on%20Twitter&style=social)](https://twitter.com/pedrolamas)
 [![Follow pedrolamas on Mastodon](https://img.shields.io/mastodon/follow/109365776481898704?label=Follow%20@pedrolamas%20on%20Mastodon&domain=https%3A%2F%2Fhachyderm.io&style=social)](https://hachyderm.io/@pedrolamas)
 
-`Klipper Preprocessor` is a Cura Post Processing Script to improve the output G-Code for [Klipper](https://github.com/Klipper3d/klipper) usage.
+`Klipper Preprocessor` is a [Cura](https://ultimaker.com/software/ultimaker-cura) Post Processing Script to improve the output G-Code for [Klipper](https://github.com/Klipper3d/klipper) usage.
 
 Currently it allows the following improvements:
 
@@ -95,6 +95,7 @@ To mitigate this issue, add a "Search and Replace" post-processing script before
 - [klipper_estimator](https://github.com/Annex-Engineering/klipper_estimator) by [Lasse Dalegaard](https://github.com/dalegaard)
 - [preprocess_cancellation](https://github.com/kageurufu/preprocess_cancellation) by [Frank Tackitt](https://github.com/kageurufu)
 - [moonraker-timelapse](https://github.com/mainsail-crew/moonraker-timelapse) by [Mainsail Crew](https://github.com/mainsail-crew)
+- [Cura](https://github.com/Ultimaker/Cura) by [UltiMaker](https://github.com/Ultimaker)
 
 ## License
 
