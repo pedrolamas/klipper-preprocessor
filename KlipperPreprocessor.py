@@ -1,5 +1,5 @@
 # Klipper Preprocessor script for Cura
-# Version: 1.2.0
+# Version: 1.2.1
 #
 # Copyright (c) 2022 Lasse Dalegaard
 # Copyright (c) 2023 Pedro Lamas
@@ -20,7 +20,7 @@ class KlipperPreprocessor(Script):
 
     def getSettingDataString(self):
         return """{
-            "name": "Klipper Preprocessor v1.2.0",
+            "name": "Klipper Preprocessor v1.2.1",
             "key": "KlipperPreprocessor",
             "metadata": {},
             "version": 2,
