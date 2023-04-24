@@ -141,7 +141,7 @@ class KlipperPreprocessor(Script):
             ]
 
             try:
-                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 10)
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 600)
                 if ret.returncode != 0:
                     self.showWarningMessage("Failed to run preprocess_cancellation\n%s" % (ret.stdout,))
             except subprocess.TimeoutExpired:
@@ -166,7 +166,7 @@ class KlipperPreprocessor(Script):
                 config_filename = os.path.join(work_dir, "config.json")
                 with open(config_filename, 'w') as config_file:
                     try:
-                        ret = subprocess.run(args, stdout = config_file, startupinfo = self.getSubprocessStartupinfo(), timeout = 3)
+                        ret = subprocess.run(args, stdout = config_file, startupinfo = self.getSubprocessStartupinfo(), timeout = 5)
                         if ret.returncode == 0:
                             shutil.copy(config_filename, klipper_estimator_config_file_path)
                     except subprocess.TimeoutExpired:
@@ -183,7 +183,7 @@ class KlipperPreprocessor(Script):
             ]
 
             try:
-                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 10)
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 600)
                 if ret.returncode != 0:
                     self.showWarningMessage("Failed to run klipper_estimator\n%s" % (ret.stdout,))
             except subprocess.TimeoutExpired:
