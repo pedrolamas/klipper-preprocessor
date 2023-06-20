@@ -6,6 +6,7 @@
 # MIT licensed
 
 from ..Script import Script
+from UM.Logger import Logger
 from UM.Message import Message
 from tempfile import TemporaryDirectory
 import sys
@@ -111,6 +112,8 @@ class KlipperPreprocessor(Script):
         add_timelapse_take_frame = self.getSettingValueByKey("add_timelapse_take_frame")
 
         with TemporaryDirectory() as work_dir:
+            Logger.log("d", "Initial run...")
+
             filename = os.path.join(work_dir, "work.gcode")
             with open(filename, 'w') as work_file:
                 for layer in data:
@@ -130,11 +133,15 @@ class KlipperPreprocessor(Script):
 
             self.execute_klipper_estimator(filename, work_dir)
 
+            Logger.log("d", "Return output...")
+
             with open(filename) as work_file:
                 return work_file.readlines()
 
     def execute_preprocess_cancellation(self, filename):
         if self.getSettingValueByKey("preprocess_cancellation_enabled"):
+            Logger.log("d", "Running preprocess_cancellation...")
+
             args = [
                 self.getSettingValueByKey("preprocess_cancellation_path"),
                 filename,
@@ -154,6 +161,8 @@ class KlipperPreprocessor(Script):
             klipper_estimator_config_file_path = self.getSettingValueByKey("klipper_estimator_config_file_path")
 
             if klipper_estimator_config_type == 'moonraker_url' and self.getSettingValueByKey("klipper_estimator_config_cache"):
+                Logger.log("d", "Running klipper_estimator to get config from Moonraker...")
+
                 klipper_estimator_config_type = 'file'
 
                 args = [
@@ -171,6 +180,8 @@ class KlipperPreprocessor(Script):
                             shutil.copy(config_filename, klipper_estimator_config_file_path)
                     except subprocess.TimeoutExpired:
                         pass
+
+            Logger.log("d", "Running klipper_estimator...")
 
             klipper_estimator_config_arg = klipper_estimator_moonraker_url if klipper_estimator_config_type == 'moonraker_url' else klipper_estimator_config_file_path
 
@@ -198,5 +209,7 @@ class KlipperPreprocessor(Script):
         return None
 
     def showWarningMessage(self, text):
+        Logger.logException("w", text)
+
         message = Message(text, title = "Klipper Preprocessor", message_type = Message.MessageType.WARNING)
         message.show()
