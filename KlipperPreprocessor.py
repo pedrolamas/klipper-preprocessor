@@ -114,20 +114,25 @@ class KlipperPreprocessor(Script):
         with TemporaryDirectory() as work_dir:
             Logger.log("d", "Initial run...")
 
+            total_layers = 0
+
             filename = os.path.join(work_dir, "work.gcode")
             with open(filename, 'w') as work_file:
+                first_layer_done = False
                 for layer in data:
+                    if first_layer_done:
+                        work_file.write(";CURA_DATA_SPLIT_HERE\n")
+                    else:
+                        first_layer_done = True
                     lines = layer.split("\n")
                     for line in lines:
-                        work_file.write(line + "\n")
                         if (line.startswith(';LAYER:')):
+                            total_layers += 1
                             if add_timelapse_take_frame:
                                 work_file.write("TIMELAPSE_TAKE_FRAME\n")
-                            if add_set_print_stats_info:
-                                work_file.write("SET_PRINT_STATS_INFO CURRENT_LAYER=%i\n" % (int(line[7:]) + 1,))
-                        elif (line.startswith(';LAYER_COUNT:')):
-                            if add_set_print_stats_info:
-                                work_file.write("SET_PRINT_STATS_INFO TOTAL_LAYER=%s\n" % (line[13:],))
+                        work_file.write(line + "\n")
+
+            Logger.log("d", "Total layers found: %d", total_layers)
 
             self.execute_preprocess_cancellation(filename)
 
@@ -135,8 +140,27 @@ class KlipperPreprocessor(Script):
 
             Logger.log("d", "Return output...")
 
+            data = []
+            current_layer = 0
             with open(filename) as work_file:
-                return work_file.readlines()
+                layer = []
+                for line in work_file:
+                    line = line.strip()
+                    if line == ";CURA_DATA_SPLIT_HERE":
+                        data.append("\n".join(layer))
+                        layer = []
+                    else:
+                        layer.append(line)
+
+                        if add_set_print_stats_info:
+                            if (line.startswith(';LAYER:')):
+                                current_layer += 1
+                                layer.append("SET_PRINT_STATS_INFO CURRENT_LAYER=%s" % (current_layer,))
+                            elif (line.startswith(';LAYER_COUNT:')):
+                                layer.append("SET_PRINT_STATS_INFO TOTAL_LAYER=%s" % (total_layers,))
+                data.append("\n".join(layer))
+
+            return data
 
     def execute_preprocess_cancellation(self, filename):
         if self.getSettingValueByKey("preprocess_cancellation_enabled"):
