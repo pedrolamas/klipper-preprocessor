@@ -55,6 +55,18 @@ class KlipperPreprocessor(Script):
                     "default_value": "",
                     "enabled": "preprocess_cancellation_enabled"
                 },
+                "preprocess_cancellation_timeout":
+                {
+                    "label": "preprocess_cancellation timeout",
+                    "description": "The maximum time to allow preprocess_cancellation to run.",
+                    "unit": "s",
+                    "type": "int",
+                    "default_value": 600,
+                    "minimum_value": "1",
+                    "minimum_value_warning": "10",
+                    "maximum_value_warning": "900",
+                    "enabled": "preprocess_cancellation_enabled"
+                },
                 "klipper_estimator_enabled": {
                     "label": "Use klipper_estimator",
                     "description": "Enable this to allow the slicer to add a more accurate time estimation to the resulting G-Code.",
@@ -67,6 +79,18 @@ class KlipperPreprocessor(Script):
                     "description": "The path to the klipper_estimator binary (including file name).",
                     "type": "str",
                     "default_value": "",
+                    "enabled": "klipper_estimator_enabled"
+                },
+                "klipper_estimator_timeout":
+                {
+                    "label": "klipper_estimator timeout",
+                    "description": "The maximum time to allow klipper_estimator to run.",
+                    "unit": "s",
+                    "type": "int",
+                    "default_value": 600,
+                    "minimum_value": "1",
+                    "minimum_value_warning": "10",
+                    "maximum_value_warning": "900",
                     "enabled": "klipper_estimator_enabled"
                 },
                 "klipper_estimator_config_type":
@@ -170,9 +194,10 @@ class KlipperPreprocessor(Script):
                 self.getSettingValueByKey("preprocess_cancellation_path"),
                 filename,
             ]
+            timeout = self.getSettingValueByKey("preprocess_cancellation_timeout")
 
             try:
-                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 600)
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = timeout)
                 if ret.returncode != 0:
                     self.showWarningMessage("Failed to run preprocess_cancellation\n%s" % (ret.stdout,))
             except subprocess.TimeoutExpired:
@@ -216,9 +241,10 @@ class KlipperPreprocessor(Script):
                 "post-process",
                 filename,
             ]
+            timeout = self.getSettingValueByKey("klipper_estimator_timeout")
 
             try:
-                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = 600)
+                ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = timeout)
                 if ret.returncode != 0:
                     self.showWarningMessage("Failed to run klipper_estimator\n%s" % (ret.stdout,))
             except subprocess.TimeoutExpired:
