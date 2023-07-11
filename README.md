@@ -84,15 +84,15 @@ That will be because you have jerk enabled in Cura. You can safely [disable jerk
 
 ### What is the "NOMESH" object that shows on my prints?
 
-Cura 5.3 was released with a [known bug](https://github.com/Ultimaker/Cura/issues/14679) that causes the identification of a "NOMESH" object.
+Cura 5.3.0 was released with a [known bug](https://github.com/Ultimaker/Cura/issues/14679) that causes the identification of a "NOMESH" object.
 
-This bug was fixed in Cura 5.3.1, so all you need to do is upgrade to it or a more recent version.
+This bug was fixed in Cura 5.3.1, so all you need to do is update to a more recent version.
 
 ### I get some strange artifacts on the outer walls of my prints
 
-Cura 5.3 was released with a [known bug](https://github.com/Ultimaker/Cura/issues/14811) that causes some print quality issues.
+Cura 5.3.0 was released with a [known bug](https://github.com/Ultimaker/Cura/issues/14811) that causes some print quality issues.
 
-This currently affects not only version 5.3 but all versions above it, so best way to avoid this problem is keep using Cura 5.2.x
+This bug was fixed in Cura 5.4.0, so all you need to do is update to a more recent version.
 
 ## Credits and Acknowledgements
 
