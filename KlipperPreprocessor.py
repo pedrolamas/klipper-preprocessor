@@ -271,7 +271,7 @@ class KlipperPreprocessor(Script):
             except subprocess.TimeoutExpired:
                 self.showWarningMessage("Timeout while running klipper_estimator")
 
-    def getSubprocessStartupinfo(self) -> Optional[subprocess.STARTUPINFO]:
+    def getSubprocessStartupinfo(self):
         if sys.platform == "win32":
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
