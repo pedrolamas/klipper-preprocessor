@@ -186,14 +186,16 @@ class KlipperPreprocessor(Script):
                     data.append("\n".join(layer))
                     layer = []
                 else:
-                    layer.append(line)
-
                     if add_set_print_stats_info:
                         if line.startswith(';LAYER:'):
                             current_layer += 1
-                            layer.append("SET_PRINT_STATS_INFO CURRENT_LAYER=%s" % (current_layer,))
+                            layer.append("SET_PRINT_STATS_INFO [CURRENT_LAYER=%s]" % (current_layer,))
                         elif line.startswith(';LAYER_COUNT:'):
-                            layer.append("SET_PRINT_STATS_INFO TOTAL_LAYER=%s" % (total_layers,))
+                            layer.append("SET_PRINT_STATS_INFO [TOTAL_LAYER=%s]" % (total_layers,))
+                        else:
+                            layer.append(line)
+                    else:
+                        layer.append(line)
             data.append("\n".join(layer))
 
         return data
