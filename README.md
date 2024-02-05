@@ -1,6 +1,6 @@
 # Klipper Preprocessor script for Cura
 
-[![Project Maintenance](https://img.shields.io/maintenance/yes/2023.svg)](https://github.com/pedrolamas/klipper-preprocessor 'GitHub Repository')
+[![Project Maintenance](https://img.shields.io/maintenance/yes/2024.svg)](https://github.com/pedrolamas/klipper-preprocessor 'GitHub Repository')
 [![License](https://img.shields.io/github/license/pedrolamas/klipper-preprocessor.svg)](https://github.com/pedrolamas/klipper-preprocessor/blob/master/LICENSE 'License')
 
 [![Follow pedrolamas on Twitter](https://img.shields.io/twitter/follow/pedrolamas?label=Follow%20@pedrolamas%20on%20Twitter&style=social)](https://twitter.com/pedrolamas)
@@ -22,7 +22,7 @@ Currently it allows the following improvements:
 1. Open Cura
 2. Open the "Help" menu and click "Show Configuration Folder"
 3. On the file list, open the "scripts" folder
-4. Download [KlipperPreprocessor.py](KlipperPreprocessor.py) to the "scripts" folder
+4. Download [KlipperPreprocessor.py](KlipperPreprocessor.py?raw=true) to the "scripts" folder
 5. Close the file list
 6. Close Cura
 7. (optional) Download [preprocess_cancellation](https://github.com/kageurufu/preprocess_cancellation/releases/latest) to a folder of your choice
