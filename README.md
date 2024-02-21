@@ -94,6 +94,19 @@ Cura 5.3.0 was released with a [known bug](https://github.com/Ultimaker/Cura/iss
 
 This bug was fixed in Cura 5.4.0, so all you need to do is update to a more recent version.
 
+## Support my work
+
+A lot of time and effort goes into the development of this and other open-source projects.
+
+If you find this project valuable, please consider supporting my work by making a donation.
+
+[![Donate on Paypal](https://img.shields.io/badge/donate-paypal-blue.svg)](https://paypal.me/pedrolamas 'Donate on Paypal')
+[![Buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-kofi-blue.svg)](https://ko-fi.com/pedrolamas 'Buy me a coffee')
+[![Support me on Patreon](https://img.shields.io/badge/join-patreon-blue.svg)](https://www.patreon.com/pedrolamas 'Support me on Patreon')
+[![Sponsor me on GitHub](https://img.shields.io/github/sponsors/pedrolamas.svg?label=github%20sponsors)](https://github.com/sponsors/pedrolamas 'Sponsor me on GitHub')
+
+Thank you for your generosity and support! 🙏
+
 ## Credits and Acknowledgements
 
 - [Klipper](https://github.com/Klipper3d/klipper) by [Kevin O'Connor](https://github.com/KevinOConnor)
