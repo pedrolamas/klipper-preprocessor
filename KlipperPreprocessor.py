@@ -9,7 +9,7 @@ from ..Script import Script
 from UM.Logger import Logger
 from UM.Message import Message
 from tempfile import TemporaryDirectory
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 import sys
 import subprocess
 import shutil
