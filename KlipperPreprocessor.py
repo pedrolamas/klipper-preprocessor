@@ -133,14 +133,18 @@ class KlipperPreprocessor(Script):
         }"""
 
     def execute(self, data: List[str]) -> List[str]:
-        with TemporaryDirectory() as work_dir:
-            filename, total_layers = self.prepare_temp_file(data, work_dir)
+        try:
+            with TemporaryDirectory() as work_dir:
+                filename, total_layers = self.prepare_temp_file(data, work_dir)
 
-            self.execute_preprocess_cancellation(filename)
+                self.execute_preprocess_cancellation(filename)
 
-            self.execute_klipper_estimator(filename, work_dir)
+                self.execute_klipper_estimator(filename, work_dir)
 
-            return self.return_processed_data(filename, total_layers)
+                return self.return_processed_data(filename, total_layers)
+        except Exception as e:
+            self.showWarningMessage("Unhandled exception:\n%s" % (str(e),))
+            return data
 
     def prepare_temp_file(self, data: List[str], work_dir: str) -> Tuple[str, int]:
         Logger.log("d", "Initial run...")
@@ -215,9 +219,11 @@ class KlipperPreprocessor(Script):
             try:
                 ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = timeout)
                 if ret.returncode != 0:
-                    self.showWarningMessage("Failed to run preprocess_cancellation\n%s" % (ret.stdout.decode().strip(),))
+                    raise Exception(ret.stdout.decode().strip())
             except subprocess.TimeoutExpired:
                 self.showWarningMessage("Timeout while running preprocess_cancellation")
+            except Exception as e:
+                self.showWarningMessage("Failed to run preprocess_cancellation\n%s" % (str(e),))
 
     def execute_klipper_estimator(self, filename: str, work_dir: str) -> None:
         klipper_estimator_enabled: bool = self.getSettingValueByKey("klipper_estimator_enabled")
@@ -267,9 +273,11 @@ class KlipperPreprocessor(Script):
             try:
                 ret = subprocess.run(args, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, startupinfo = self.getSubprocessStartupinfo(), timeout = timeout)
                 if ret.returncode != 0:
-                    self.showWarningMessage("Failed to run klipper_estimator\n%s" % (ret.stdout.decode().strip(),))
+                    raise Exception(ret.stdout.decode().strip())
             except subprocess.TimeoutExpired:
                 self.showWarningMessage("Timeout while running klipper_estimator")
+            except Exception as e:
+                self.showWarningMessage("Failed to run klipper_estimator\n%s" % (str(e),))
 
     def getSubprocessStartupinfo(self):
         if sys.platform == "win32":
