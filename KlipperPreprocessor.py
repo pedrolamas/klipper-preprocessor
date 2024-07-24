@@ -277,6 +277,8 @@ class KlipperPreprocessor(Script):
                 klipper_estimator_path,
                 "--config_" + klipper_estimator_config_type,
                 klipper_estimator_config_arg,
+                "--config_moonraker_api_key",
+                klipper_estimator_moonraker_api_key,
                 "post-process",
                 filename,
             ]
