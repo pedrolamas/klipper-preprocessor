@@ -109,7 +109,15 @@ class KlipperPreprocessor(Script):
                 "klipper_estimator_moonraker_url":
                 {
                     "label": "Moonraker URL",
-                    "description": "URL to Moonraker base",
+                    "description": "URL to Moonraker base.",
+                    "type": "str",
+                    "default_value": "",
+                    "enabled": "klipper_estimator_enabled and klipper_estimator_config_type == 'moonraker_url'"
+                },
+                "klipper_estimator_moonraker_api_key":
+                {
+                    "label": "Moonraker API Key",
+                    "description": "Optional Moonraker API Key.",
                     "type": "str",
                     "default_value": "",
                     "enabled": "klipper_estimator_enabled and klipper_estimator_config_type == 'moonraker_url'"
@@ -231,6 +239,7 @@ class KlipperPreprocessor(Script):
         if klipper_estimator_enabled:
             klipper_estimator_config_type: str = self.getSettingValueByKey("klipper_estimator_config_type")
             klipper_estimator_moonraker_url: str = self.getSettingValueByKey("klipper_estimator_moonraker_url")
+            klipper_estimator_moonraker_api_key: str = self.getSettingValueByKey("klipper_estimator_moonraker_api_key")
             klipper_estimator_config_file_path: str = self.getSettingValueByKey("klipper_estimator_config_file_path")
             klipper_estimator_path: str = self.getSettingValueByKey("klipper_estimator_path")
 
@@ -243,6 +252,8 @@ class KlipperPreprocessor(Script):
                     klipper_estimator_path,
                     "--config_moonraker_url",
                     klipper_estimator_moonraker_url,
+                    "--config_moonraker_api_key",
+                    klipper_estimator_moonraker_api_key,
                     "dump-config"
                 ]
 
@@ -250,9 +261,11 @@ class KlipperPreprocessor(Script):
 
                 with open(config_filename, 'w') as config_file:
                     try:
-                        ret = subprocess.run(args, stdout = config_file, startupinfo = self.getSubprocessStartupinfo(), timeout = 5)
+                        ret = subprocess.run(args, stdout = config_file, stderr = subprocess.PIPE, startupinfo = self.getSubprocessStartupinfo(), timeout = 5)
                         if ret.returncode == 0:
                             shutil.copy(config_filename, klipper_estimator_config_file_path)
+                        else:
+                            self.showWarningMessage("Failed to run klipper_estimator\n%s" % (ret.stderr.decode().strip(),))
                     except subprocess.TimeoutExpired:
                         pass
 
